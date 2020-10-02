@@ -48,7 +48,7 @@ include '../dist/Find.php';
                 <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                     <div class="sb-sidenav-menu">
                         <div class="nav">
-                            <div class="sb-sidenav-menu-heading">Core</div>
+                        <div class="sb-sidenav-menu-heading">Core</div>
                             <a class="nav-link" href="userIndex.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                 主頁
@@ -114,7 +114,12 @@ include '../dist/Find.php';
                 <main>
                 <?php
     $db = DB();
-    $sql = "SELECT * from instabuilder.user ORDER BY user_id";
+    $sql = "SELECT b.account_id,c.account_name,a.post_no,count(a.like_account)貼文按讚數量
+    FROM instabuilder.like as a 
+    join userpost as b on a.post_no = b.post_no
+    join instaaccount as c on c.account_id = b.account_id
+    group by post_no
+    order by account_id,post_no";
     $result = $db->query($sql);
 //        echo '<table  border="1">';
 //        while ($row = $result->fetch(PDO::FETCH_OBJ)) {
@@ -127,27 +132,23 @@ include '../dist/Find.php';
     ?>
 
                     <div class="container-fluid">
-                        <h1 class="mt-4">帳戶總覽</h1>
+                        <h1 class="mt-4">貼文按讚數量統計</h1>
                         
                         
                         <div class="card mb-4">
                             <div class="card-header">
                                 <i class="fas fa-table mr-1"></i>
-                                user
+                                
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
-                                            <th>使用者編號</th>
-                                            <th >姓名</th>
-                                            <th >新增時間</th>
-                                            <th>E-mail</th>
-                                            <th>密碼</th>
-                                            <th >權限</th>
-                                            <th>更新</th>
-                                            <th>刪除</th>
+                                            <th >帳號編號</th>
+                <th >帳號名稱</th>
+                <th >貼文編號</th>
+                <th >貼文按讚數量</th>
                                             </tr>
                                         </thead>
                                         
@@ -157,15 +158,10 @@ include '../dist/Find.php';
             while ($row = $result->fetch(PDO::FETCH_OBJ)) {
                 //PDO::FETCH_OBJ 指定取出資料的型態
                 echo '<tr>';
-                echo '<td>' . $row->user_id . "</td>"
-                . "<td>" . $row->user_name . "</td>"
-                . "<td>" . $row->signup_datetime . "</td>"
-                . "<td>" . $row->signup_email . "</td>"
-                . "<td>" . $row->login_pas . "</td>"
-                . "<td>" . $row->privilege . "</td>"
-                
-                . "<td> <button type=\"button\" onclick='location.href=\"userChange.php?id=". $row->user_id."\"'>更新</button></td>"
-                . "<td> <button type=\"button\" onclick='location.href=\"userDelete.php?id=". $row->user_id."\"'>刪除</button></td>";
+                echo '<td>' . $row->account_id . "</td>"
+                . "<td>" . $row->account_name. "</td>"
+                . "<td>" . $row->post_no. "</td>"
+                . "<td>" . $row->貼文按讚數量 . "</td>";
 
                 echo '</tr>';
             }
@@ -201,50 +197,51 @@ include '../dist/Find.php';
         <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
         <script src="assets/demo/datatables-demo.js"></script>
         <script>
-        (function(document) {
-  'use strict';
+            (function (document) {
+                'use strict';
 
-  // 建立 LightTableFilter
-  var LightTableFilter = (function(Arr) {
+                // 建立 LightTableFilter
+                var LightTableFilter = (function (Arr) {
 
-    var _input;
+                    var _input;
 
-    // 資料輸入事件處理函數
-    function _onInputEvent(e) {
-      _input = e.target;
-      var tables = document.getElementsByClassName(_input.getAttribute('data-table'));
-      Arr.forEach.call(tables, function(table) {
-        Arr.forEach.call(table.tBodies, function(tbody) {
-          Arr.forEach.call(tbody.rows, _filter);
-        });
-      });
-    }
+                    // 資料輸入事件處理函數
+                    function _onInputEvent(e) {
+                        _input = e.target;
+                        var tables = document.getElementsByClassName(_input.getAttribute('data-table'));
+                        Arr.forEach.call(tables, function (table) {
+                            Arr.forEach.call(table.tBodies, function (tbody) {
+                                Arr.forEach.call(tbody.rows, _filter);
+                            });
+                        });
+                    }
 
-    // 資料篩選函數，顯示包含關鍵字的列，其餘隱藏
-    function _filter(row) {
-      var text = row.textContent.toLowerCase(), val = _input.value.toLowerCase();
-      row.style.display = text.indexOf(val) === -1 ? 'none' : 'table-row';
-    }
+                    // 資料篩選函數，顯示包含關鍵字的列，其餘隱藏
+                    function _filter(row) {
+                        var text = row.textContent.toLowerCase(), val = _input.value.toLowerCase();
+                        row.style.display = text.indexOf(val) === -1 ? 'none' : 'table-row';
+                    }
 
-    return {
-      // 初始化函數
-      init: function() {
-        var inputs = document.getElementsByClassName('light-table-filter');
-        Arr.forEach.call(inputs, function(input) {
-          input.oninput = _onInputEvent;
-        });
-      }
-    };
-  })(Array.prototype);
+                    return {
+                        // 初始化函數
+                        init: function () {
+                            var inputs = document.getElementsByClassName('light-table-filter');
+                            Arr.forEach.call(inputs, function (input) {
+                                input.oninput = _onInputEvent;
+                            });
+                        }
+                    };
+                })(Array.prototype);
 
-  // 網頁載入完成後，啟動 LightTableFilter
-  document.addEventListener('readystatechange', function() {
-    if (document.readyState === 'complete') {
-      LightTableFilter.init();
-    }
-  });
+                // 網頁載入完成後，啟動 LightTableFilter
+                document.addEventListener('readystatechange', function () {
+                    if (document.readyState === 'complete') {
+                        LightTableFilter.init();
+                    }
+                });
 
-})(document);
+            })(document);
         </script>
     </body>
+
 </html>

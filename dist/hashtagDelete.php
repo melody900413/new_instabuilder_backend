@@ -1,8 +1,7 @@
-<!DOCTYPE html>
+<!doctype html>
 <?php
 session_start();
 include '../dist/Find.php';
-@include '../DataBase.php';
 @logInSure();
 ?>
 <html lang="en">
@@ -12,12 +11,69 @@ include '../dist/Find.php';
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Tables - SB Admin</title>
+        <title>Static Navigation - SB Admin</title>
         <link href="css/styles.css" rel="stylesheet" />
-        <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" crossorigin="anonymous"></script>
-        
-    <body class="sb-nav-fixed">
+        <script src="assets/js/sweetalert.min.js" type="text/javascript"></script>
+
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    </head>
+    <body>
+        <?php
+        if (isset($_SESSION["dele_sure"])) {
+            if ($_SESSION["dele_sure"]) {
+                echo '<script>  swal({
+                text: "刪除成功！",
+                icon: "success",
+                button: false,
+                timer: 3000,
+            }); </script>';
+                $_SESSION["dele_sure"] = false;
+            }
+        }
+
+        $sure = true;
+        if (isset($_POST["Reg"])) {
+            if (empty($_POST["hashtag_no"])) {
+
+                $nameErr = "編號是必填的!";
+                $sure = false;
+            }
+            if ($sure) {
+                $_SESSION["dele_hashtag_no"] = $_POST["hashtag_no"];
+                echo '        <script>
+                swal({
+                    title: "確定刪除？",
+                    text: "你將無法恢復此資料！",
+                    icon: "warning",
+                    dangerMode: true,
+                    buttons: {
+                        1: {
+                            text: "取消",
+                            value: "取消",
+                        },
+                        2: {
+                            text: "確定刪除！",
+                            value: "確定刪除",
+                        },
+                    },
+    
+                }).then(function (value) {
+                    switch (value) {
+                        case"取消":
+                            window.location.href = "hashtagDelete.php";
+                            break;
+                        case"確定刪除":
+                            window.location.href = "hashtagDeleteFile.php";
+                            break;
+                            
+    
+                    }
+                })
+            </script>  ';
+            }
+        }
+        ?>
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <a class="navbar-brand" href="index.html">Start Bootstrap</a>
             <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#"><i class="fas fa-bars"></i></button>
@@ -111,75 +167,62 @@ include '../dist/Find.php';
                 </nav>
             </div>
             <div id="layoutSidenav_content">
-                <main>
-                <?php
-    $db = DB();
-    $sql = "SELECT * from instabuilder.user ORDER BY user_id";
-    $result = $db->query($sql);
-//        echo '<table  border="1">';
-//        while ($row = $result->fetch(PDO::FETCH_OBJ)) {
-////PDO::FETCH_OBJ 指定取出資料的型態
-//            echo '<tr>';
-//            echo '<td>' . $row->顧客編號 . "</td><td>" . $row->顧客名稱 . "</td>";
-//            echo '</tr>';
-//        }
-//        echo '</table>';
-    ?>
+            <div class="container">          
 
-                    <div class="container-fluid">
-                        <h1 class="mt-4">帳戶總覽</h1>
-                        
-                        
-                        <div class="card mb-4">
-                            <div class="card-header">
-                                <i class="fas fa-table mr-1"></i>
-                                user
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                        <thead>
-                                            <tr>
-                                            <th>使用者編號</th>
-                                            <th >姓名</th>
-                                            <th >新增時間</th>
-                                            <th>E-mail</th>
-                                            <th>密碼</th>
-                                            <th >權限</th>
-                                            <th>更新</th>
-                                            <th>刪除</th>
-                                            </tr>
-                                        </thead>
-                                        
-                                        <tbody>
-                                            <tr>
-                                            <?php
-            while ($row = $result->fetch(PDO::FETCH_OBJ)) {
-                //PDO::FETCH_OBJ 指定取出資料的型態
-                echo '<tr>';
-                echo '<td>' . $row->user_id . "</td>"
-                . "<td>" . $row->user_name . "</td>"
-                . "<td>" . $row->signup_datetime . "</td>"
-                . "<td>" . $row->signup_email . "</td>"
-                . "<td>" . $row->login_pas . "</td>"
-                . "<td>" . $row->privilege . "</td>"
-                
-                . "<td> <button type=\"button\" onclick='location.href=\"userChange.php?id=". $row->user_id."\"'>更新</button></td>"
-                . "<td> <button type=\"button\" onclick='location.href=\"userDelete.php?id=". $row->user_id."\"'>刪除</button></td>";
 
-                echo '</tr>';
-            }
-            ?>
-                                            </tr>
-                                           
-                                        </tbody>
-                                    </table>
-                                </div>
-                                
-                            </div>
-                        </div>
+<!--~~~~~~~~~~~~~~~~~--> 
+            <div class="content">
+            <h1 class="mt-4">刪除hashtag</h1>
+
+                <hr/>
+
+<form method="post" action="">
+
+                    <div class="6u 12u$(small)"> <p>hashtag編號：</p>
+                        <input type="text" name="hashtag_no" id="big" value="" placeholder="Number" required>
+                        <script>
+                            var url = location.href;
+                            //之後去分割字串把分割後的字串放進陣列中
+                            var ary1 = url.split('?');
+                            //此時ary1裡的內容為：
+                            //ary1[0] = 'index.aspx'，ary2[1] = 'id=U001&name=GQSM'
+
+                            //下一步把後方傳遞的每組資料各自分割
+                            var ary2 = ary1[1].split('&');
+                            //此時ary2裡的內容為：
+                            //ary2[0] = 'id=U001'，ary2[1] = 'name=GQSM'
+
+                            //最後如果我們要找id的資料就直接取ary[0]下手，name的話就是ary[1]
+                            var ary3 = ary2[0].split('=');
+                            //此時ary3裡的內容為：
+                            //ary3[0] = 'id'，ary3[1] = 'U001'
+
+                            //取得id值
+                            var id = ary3[1];
+                            var aee = 10;
+                            document.getElementById("big").value = id;
+                        </script>
                     </div>
-                </main>
+
+
+                    <div class="12u$">
+                        <ul class="actions">
+                            <div align="right"  style="margin-right: 5%">
+
+                                <li><input type="submit" name="Reg" value="刪除"></li>
+
+                            </div>
+                        </ul>
+                    </div>
+                </form>
+
+
+            </div>       
+
+            <!-- Scripts -->
+            
+            
+            </div>
                 <footer class="py-4 bg-light mt-auto">
                     <div class="container-fluid">
                         <div class="d-flex align-items-center justify-content-between small">
@@ -197,54 +240,25 @@ include '../dist/Find.php';
         <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="js/scripts.js"></script>
-        <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
-        <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
-        <script src="assets/demo/datatables-demo.js"></script>
-        <script>
-        (function(document) {
-  'use strict';
+        <script src="assets/js/jquery.min.js"></script>
+            <script src="assets/js/jquery.scrollex.min.js"></script>
+            <script src="assets/js/skel.min.js"></script>
+            <script src="assets/js/util.js"></script>
+            <script src="assets/js/main.js"></script>
+            <script>
+                            function getQueryVariable(variable)
+                            {
+                                var query = window.location.search.substring(1);
+                                var vars = query.split("&");
+                                for (var i = 0; i < vars.length; i++) {
+                                    var pair = vars[i].split("=");
+                                    if (pair[0] == variable) {
+                                        return pair[1];
+                                    }
+                                }
+                                return(false);
+                            }
 
-  // 建立 LightTableFilter
-  var LightTableFilter = (function(Arr) {
-
-    var _input;
-
-    // 資料輸入事件處理函數
-    function _onInputEvent(e) {
-      _input = e.target;
-      var tables = document.getElementsByClassName(_input.getAttribute('data-table'));
-      Arr.forEach.call(tables, function(table) {
-        Arr.forEach.call(table.tBodies, function(tbody) {
-          Arr.forEach.call(tbody.rows, _filter);
-        });
-      });
-    }
-
-    // 資料篩選函數，顯示包含關鍵字的列，其餘隱藏
-    function _filter(row) {
-      var text = row.textContent.toLowerCase(), val = _input.value.toLowerCase();
-      row.style.display = text.indexOf(val) === -1 ? 'none' : 'table-row';
-    }
-
-    return {
-      // 初始化函數
-      init: function() {
-        var inputs = document.getElementsByClassName('light-table-filter');
-        Arr.forEach.call(inputs, function(input) {
-          input.oninput = _onInputEvent;
-        });
-      }
-    };
-  })(Array.prototype);
-
-  // 網頁載入完成後，啟動 LightTableFilter
-  document.addEventListener('readystatechange', function() {
-    if (document.readyState === 'complete') {
-      LightTableFilter.init();
-    }
-  });
-
-})(document);
-        </script>
+            </script>
     </body>
 </html>
