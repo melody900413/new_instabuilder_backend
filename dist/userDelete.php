@@ -14,32 +14,65 @@ include '../dist/Find.php';
         <title>Static Navigation - SB Admin</title>
         <link href="css/styles.css" rel="stylesheet" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" crossorigin="anonymous"></script>
+        <script src="assets/js/sweetalert.min.js" type="text/javascript"></script>
+
         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     </head>
     <body>
+    <body>
         <?php
-        if (isset($_POST["Reg"])) {
-            $db = DB();
-            $sql = "SELECT * FROM user where user_id =" . $_POST["user_id"];
-            $result = $db->query($sql);
-            while ($row = $result->fetch(PDO::FETCH_OBJ)) {
-                if (isset($row->user_id)) {
-                    $_SESSION["user_id"] = $row->user_id;
-                    $_SESSION["user_name"] = $row->user_name;
-                    $_SESSION["signup_datetime"] = $row->signup_datetime;
-                    $_SESSION["signup_email"] = $row->signup_email;
-                    $_SESSION["login_pas"] = $row->login_pas;
-                    $_SESSION["privilege"] = $row->privilege;
-                    header("Location:userChange2.php");
-                }
-            }
-            echo '<script>  swal({
-                title: "無此客戶！",
-                text: "請檢查是否輸入錯誤資料！",
-                icon: "error",
+        if (isset($_SESSION["dele_sure"])) {
+            if ($_SESSION["dele_sure"]) {
+                echo '<script>  swal({
+                text: "刪除成功！",
+                icon: "success",
                 button: false,
-                timer: 2000,
-                }); </script>';
+                timer: 3000,
+            }); </script>';
+                $_SESSION["dele_sure"] = false;
+            }
+        }
+
+        $sure = true;
+        if (isset($_POST["Reg"])) {
+            if (empty($_POST["user_id"])) {
+
+                $nameErr = "姓名是必填的!";
+                $sure = false;
+            }
+            if ($sure) {
+                $_SESSION["dele_user_id"] = $_POST["user_id"];
+                echo '        <script>
+                swal({
+                    title: "確定刪除？",
+                    text: "你將無法恢復此資料！",
+                    icon: "warning",
+                    dangerMode: true,
+                    buttons: {
+                        1: {
+                            text: "取消",
+                            value: "取消",
+                        },
+                        2: {
+                            text: "確定刪除！",
+                            value: "確定刪除",
+                        },
+                    },
+    
+                }).then(function (value) {
+                    switch (value) {
+                        case"取消":
+                            window.location.href = "userDelete.php";
+                            break;
+                        case"確定刪除":
+                            window.location.href = "userDeleteFile.php";
+                            break;
+                            
+    
+                    }
+                })
+            </script>  ';
+            }
         }
         ?>
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
@@ -143,14 +176,15 @@ include '../dist/Find.php';
 
 <!--~~~~~~~~~~~~~~~~~--> 
             <div class="content">
-                <h2>更新帳戶</h2>
+                <h2>刪除帳戶</h2>
+
                 <hr/>
 
                 <form method="post" action="">
 
                     <div class="6u 12u$(small)"> <p>帳戶編號：</p>
 
-                        <input type="number" name="user_id" id="big" value="" placeholder="Number" required>
+                        <input type="text" name="user_id" id="big" value=""  required>
                         <script>
                             var url = location.href;
                             //之後去分割字串把分割後的字串放進陣列中
@@ -180,7 +214,7 @@ include '../dist/Find.php';
                         <ul class="actions">
                             <div align="right"  style="margin-right: 5%">
 
-                                <li><input type="submit" name="Reg" value="查詢"></li>
+                                <li><input type="submit" name="Reg" value="刪除"></li>
 
                             </div>
                         </ul>
@@ -190,8 +224,23 @@ include '../dist/Find.php';
 
             </div>       
 
+            <!-- Scripts -->
             
+            <script>
+                            function getQueryVariable(variable)
+                            {
+                                var query = window.location.search.substring(1);
+                                var vars = query.split("&");
+                                for (var i = 0; i < vars.length; i++) {
+                                    var pair = vars[i].split("=");
+                                    if (pair[0] == variable) {
+                                        return pair[1];
+                                    }
+                                }
+                                return(false);
+                            }
 
+            </script>
             </div>
                 <footer class="py-4 bg-light mt-auto">
                     <div class="container-fluid">
@@ -217,5 +266,3 @@ include '../dist/Find.php';
             <script src="assets/js/main.js"></script>
     </body>
 </html>
-
-

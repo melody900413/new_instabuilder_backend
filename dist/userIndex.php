@@ -58,7 +58,7 @@
                                     <a class="nav-link" href="userAll.php">總覽</a>
                                     <a class="nav-link" href="userAdd.php">新增</a>
                                     <a class="nav-link" href="userDelete.php">刪除</a>
-                                    <a class="nav-link" href="userCange.php">更新</a>
+                                    <a class="nav-link" href="userChange.php">更新</a>
                                 </nav>
                             </div>
                             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">

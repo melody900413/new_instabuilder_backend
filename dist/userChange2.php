@@ -2,6 +2,7 @@
 <?php
 session_start();
 include '../dist/Find.php';
+@include '../DataBase.php';
 @logInSure();
 ?>
 <html lang="en">
@@ -14,32 +15,113 @@ include '../dist/Find.php';
         <title>Static Navigation - SB Admin</title>
         <link href="css/styles.css" rel="stylesheet" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" crossorigin="anonymous"></script>
+        <script src="assets/js/sweetalert.min.js" type="text/javascript"></script>
         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     </head>
     <body>
-        <?php
+    <?php
+        $user_nameErr = $signup_datetimeErr = $signup_emailErr = $login_pasErr = $privilegeErr = "";
+        $user_name = $signup_datetime = $signup_email = $login_pas = $privilege  = "";
+        $sure = true;
+
         if (isset($_POST["Reg"])) {
-            $db = DB();
-            $sql = "SELECT * FROM user where user_id =" . $_POST["user_id"];
-            $result = $db->query($sql);
-            while ($row = $result->fetch(PDO::FETCH_OBJ)) {
-                if (isset($row->user_id)) {
-                    $_SESSION["user_id"] = $row->user_id;
-                    $_SESSION["user_name"] = $row->user_name;
-                    $_SESSION["signup_datetime"] = $row->signup_datetime;
-                    $_SESSION["signup_email"] = $row->signup_email;
-                    $_SESSION["login_pas"] = $row->login_pas;
-                    $_SESSION["privilege"] = $row->privilege;
-                    header("Location:userChange2.php");
-                }
+            $user_name = $_POST["user_name"];
+            $signup_datetime = $_POST["signup_datetime"];
+            $signup_email = $_POST["signup_email"];
+            $login_pas = $_POST["login_pas"];
+            $privilege = $_POST["privilege"];
+
+            if (empty($_POST["user_name"])) {
+
+                $nameErr = "姓名是必填的!";
+                $sure = false;
             }
-            echo '<script>  swal({
-                title: "無此客戶！",
-                text: "請檢查是否輸入錯誤資料！",
+
+            if (empty($_POST["signup_datetime"])) {
+                $signup_datetimeErr = "日期是必填的!";
+                $sure = false;
+            } 
+
+            if (empty($_POST["signup_email"])) {
+                $signup_emailErr = "email是必填的!";
+                $sure = false;
+            } 
+
+            if (empty($_POST["login_pas"])) {
+                $login_pasErr = "login_pas是必填的!";
+                $sure = false;
+            }
+
+            if (empty($_POST["privilege"])) {
+                $privilegeErr = "權限是必填的!";
+                $sure = false;
+            }
+            if ($sure) {
+
+                $db = DB();
+
+                $sql = "UPDATE user \n" .
+                "SET user_id = ".$_SESSION['user_id'].",\n" .
+                "user_name = '".$_POST['user_name']."',\n" .
+                "signup_datetime = '".$_POST['signup_datetime']."',\n" .
+                "signup_email = '".$_POST['signup_email']."',\n" .
+                "login_pas = '".$_POST['login_pas']."',\n" .
+                "privilege = '".$_POST['privilege']."'\n".
+                "WHERE\n" .
+                "user_id =" . $_SESSION["user_id"]."";
+
+                $db->query($sql);
+//                echo 'swal("新增成功！", "回到客戶總覽 或是 客戶新增?", "success").then(function (result) {
+//                    
+//                    window.location.href = "http://tw.yahoo.com";
+//                }); ';
+
+                echo '        <script>
+            swal({
+                title: "更改成功！",
+                text: "回到帳戶總覽 或是 更新帳戶?",
+                icon: "success",
+                buttons: {
+                    1: {
+                        text: "帳戶總覽",
+                        value: "帳戶總覽",
+                    },
+                    2: {
+                        text: "更新帳戶",
+                        value: "更新帳戶",
+                    },
+                },
+            }).then(function (value) {
+                switch (value) {
+                    case"帳戶總覽":
+                        window.location.href = "userAll.php";
+                        break;
+                    case"更新帳戶":
+                        window.location.href = "userChange.php";
+                        break;
+                        
+                }
+            })
+        </script>  ';
+
+
+//                header("Location:all.php");
+            } else {
+                $mes = $user_nameErr . $signup_datetimeErr . $signup_emailErr . $login_pasErr .$privilegeErr ;
+                echo '<script>  swal({
+                text: "' . $mes . '",
                 icon: "error",
                 button: false,
-                timer: 2000,
-                }); </script>';
+                timer: 3000,
+            }); </script>';
+            }
+        }
+
+        function test_input($data) {
+            $data = trim($data);
+            $data = stripslashes($data);
+            $data = htmlspecialchars($data);
+            return $data;
         }
         ?>
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
@@ -138,59 +220,71 @@ include '../dist/Find.php';
                 </nav>
             </div>
             <div id="layoutSidenav_content">
-            <div class="container">          
+                        <div class="container">          
 
 
-<!--~~~~~~~~~~~~~~~~~--> 
+            <!--~~~~~~~~~~~~~~~~~--> 
             <div class="content">
                 <h2>更新帳戶</h2>
                 <hr/>
-
+                
+                <p>客戶帳戶:<?php echo $_SESSION["user_id"]; ?></p>
+                <br>
+                <br>
+                
                 <form method="post" action="">
 
-                    <div class="6u 12u$(small)"> <p>帳戶編號：</p>
-
-                        <input type="number" name="user_id" id="big" value="" placeholder="Number" required>
-                        <script>
-                            var url = location.href;
-                            //之後去分割字串把分割後的字串放進陣列中
-                            var ary1 = url.split('?');
-                            //此時ary1裡的內容為：
-                            //ary1[0] = 'index.aspx'，ary2[1] = 'id=U001&name=GQSM'
-
-                            //下一步把後方傳遞的每組資料各自分割
-                            var ary2 = ary1[1].split('&');
-                            //此時ary2裡的內容為：
-                            //ary2[0] = 'id=U001'，ary2[1] = 'name=GQSM'
-
-                            //最後如果我們要找id的資料就直接取ary[0]下手，name的話就是ary[1]
-                            var ary3 = ary2[0].split('=');
-                            //此時ary3裡的內容為：
-                            //ary3[0] = 'id'，ary3[1] = 'U001'
-
-                            //取得id值
-                            var id = ary3[1];
-                            var aee = 10;
-                            document.getElementById("big").value = id;
-                        </script>
+                <div class="6u 12u$(small)"> <p>姓名：</p>
+                        <input type="text" name="user_name" id="user_name" value="<?php echo $user_name; ?><?php echo $_SESSION["user_name"]; ?>" placeholder="" required>
                     </div>
 
+                    <br/>
+                    <div class="6u$ 12u$(small)"> 
+                        <p>新增日期：</p>
+                        <input type="date" name="signup_datetime" id="signup_datetime" value="<?php echo $signup_datetime; ?><?php echo $_SESSION["signup_datetime"]; ?>" placeholder="" required>
+                    </div>
+                
+                    <br/>
+                    
+                    <div class="6u$ 12u$(xsmall)" ><p>E-mail：</p>
+                        <input type="email" name="signup_email" id="signup_email" value="<?php echo $signup_email; ?><?php echo $_SESSION["signup_email"]; ?>" placeholder="" required>
+                    </div>
 
+                    <div class="6u 12u$(xsmall)" ><p>密碼</p>
+                        <input type="text" name="login_pas" id="login_pas" value="<?php echo $login_pas; ?><?php echo $_SESSION["login_pas"]; ?>" placeholder="" required>
+                    </div>
+
+                    <br/>
+                    
+                    <div class="6u 12u$(small)"> <p>權限</p>
+                        <input type="text" name="privilege" id="privilege" value="<?php echo $privilege; ?><?php echo $_SESSION["privilege"]; ?>" placeholder="" required>
+                    </div>	
+
+
+                    <div class ="Err" style="color:red;">
+                        <?php
+                        echo "<p>" . $user_nameErr . "</p>";
+                        echo "<p>" . $signup_datetimeErr . "</p>";
+                        echo "<p>" . $signup_emailErr . "</p>";
+                        echo "<p>" . $login_pasErr . "</p>";
+                        echo "<p>" . $privilegeErr . "</p>";
+                        ?>
+                    </div>
+                    
                     <div class="12u$">
                         <ul class="actions">
                             <div align="right"  style="margin-right: 5%">
 
-                                <li><input type="submit" name="Reg" value="查詢"></li>
+                                <li><input type="submit" name="Reg" value="更新"></li>
 
                             </div>
                         </ul>
                     </div>
+
                 </form>
 
 
             </div>       
-
-            
 
             </div>
                 <footer class="py-4 bg-light mt-auto">
@@ -210,12 +304,12 @@ include '../dist/Find.php';
         <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="js/scripts.js"></script>
+        <!-- Scripts -->
         <script src="assets/js/jquery.min.js"></script>
             <script src="assets/js/jquery.scrollex.min.js"></script>
             <script src="assets/js/skel.min.js"></script>
             <script src="assets/js/util.js"></script>
             <script src="assets/js/main.js"></script>
+
     </body>
 </html>
-
-
