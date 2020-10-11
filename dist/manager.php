@@ -62,7 +62,7 @@ include '../dist/Find.php';
 
             <!--~~~~~~~~~~~~~~~~~--> 
             <div class="content">
-                <h2>管理者登入</h2>
+            <h1 class="mt-4">管理者登入</h1>
 
                 <form method="post" action="">
 
