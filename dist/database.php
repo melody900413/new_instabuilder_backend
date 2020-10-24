@@ -2,7 +2,7 @@
 use Medoo\Medoo;
 
 function DB() {
-    $hostname = '140.131.114.143';
+    $hostname = 'instabuilderdb.cmjbghjyygh8.ap-northeast-1.rds.amazonaws.com';
     $username = 'root';
     $password = 'superman12334667';
     $db_name = 'instabuilder';
@@ -22,7 +22,7 @@ function DB() {
 }
 
 function DBuseMedoo() {
-    $hostname = '140.131.114.143';
+    $hostname = 'instabuilderdb.cmjbghjyygh8.ap-northeast-1.rds.amazonaws.com';
     $username = 'root';
     $password = 'superman12334667';
     $db_name = 'instabuilder';

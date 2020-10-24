@@ -191,7 +191,7 @@ function logInSure(){
         //     timer: 2000,
         // }); </script>';
         
-        header('Location: ../maneger.php');
+        header('Location: ../dist/login.php');
         $_SESSION["unLog"] = true;
         // echo '<meta http-equiv="refresh" content="2;url=../maneger.php" />';
     }
