@@ -163,8 +163,7 @@ include '../dist/Find.php';
                             <div class="collapse" id="hashtagLayouts" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
                                     <a class="nav-link" href="hashtagAll.php">總覽</a>
-                                    <a class="nav-link" href="hashtagAdd.php">新增</a>
-                                    <a class="nav-link" href="hashtagDelete.php">刪除</a>
+                                    <a class="nav-link" href="hashtagCate.php">類別</a>
                                 </nav>
                             </div>
                             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#postLayouts" aria-expanded="false" aria-controls="collapseLayouts">

@@ -3,7 +3,6 @@
 session_start();
 include '../dist/Find.php';
 @include '../DataBase.php';
-@logInSure();
 ?>
 <html lang="en">
     <head>
@@ -64,8 +63,7 @@ include '../dist/Find.php';
                             <div class="collapse" id="hashtagLayouts" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
                                     <a class="nav-link" href="hashtagAll.php">總覽</a>
-                                    <a class="nav-link" href="hashtagAdd.php">新增</a>
-                                    <a class="nav-link" href="hashtagDelete.php">刪除</a>
+                                    <a class="nav-link" href="hashtagCate.php">類別</a>
                                 </nav>
                             </div>
                             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#postLayouts" aria-expanded="false" aria-controls="collapseLayouts">
@@ -103,7 +101,7 @@ include '../dist/Find.php';
                 <main>
                 <?php
                 $db = DB();
-                $sql = "SELECT * FROM hashtagcates ORDER BY hashtag_no";
+                $sql = "SELECT * FROM hashtags ORDER BY hash_no";
                 $result = $db->query($sql);
 //        echo '<table  border="1">';
 //        while ($row = $result->fetch(PDO::FETCH_OBJ)) {
@@ -115,8 +113,8 @@ include '../dist/Find.php';
 //        echo '</table>';
                 ?>
                     <div class="container-fluid">
-                        <h1 class="mt-4">hashtag總覽</h1>
-                        
+                        <h1 class="mt-4">Hashtags總覽</h1>
+                        <input type="search" class="light-table-filter" data-table="table table-bordered" placeholder="請輸入關鍵字"><p>
                         
                         <div class="card mb-4">
                             <div class="card-header">
@@ -130,9 +128,9 @@ include '../dist/Find.php';
                                             <tr>
                                                 <th >hashtag編號</th>
                                                 <th >hashtag</th>
-                                                <th >階層</th>
-                                                <th>上一層hashtag</th>
-                                                <th>刪除</th>
+                                                <th >分類</th>
+                                                <th>點擊次數</th>
+                                                
                                             </tr>
                                         </thead>
                                         
@@ -142,13 +140,13 @@ include '../dist/Find.php';
                         while ($row = $result->fetch(PDO::FETCH_OBJ)) {
                             //PDO::FETCH_OBJ 指定取出資料的型態
                             echo '<tr>';
-                            echo '<td>' . $row->hashtag_no . "</td>"
-                            . "<td>" . $row->hashtag . "</td>"
-                            . "<td>" . $row->stage . "</td>"
-                            . "<td>" . $row->last_stage . "</td>"
+                            echo '<td>' . $row->hash_no . "</td>"
+                            . "<td>" . $row->hash_name. "</td>"
+                            . "<td>" . $row->cate_no . "</td>"
+                            . "<td>" . $row->times . "</td>"
                             
                             
-                            . "<td> <button type=\"button\" onclick='location.href=\"userDelete.php?id=" . $row->hashtag_no . "\"'>刪除</button></td>";
+                            ;
 
                             echo '</tr>';
                         }

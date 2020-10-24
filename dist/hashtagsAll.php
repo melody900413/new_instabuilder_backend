@@ -3,7 +3,6 @@
 session_start();
 include '../dist/Find.php';
 @include '../DataBase.php';
-@logInSure();
 ?>
 <html lang="en">
     <head>
@@ -12,13 +11,13 @@ include '../dist/Find.php';
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Dashboard - SB Admin</title>
+        <title>Tables - SB Admin</title>
         <link href="css/styles.css" rel="stylesheet" />
         <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" crossorigin="anonymous"></script>
-    </head>
+        
     <body class="sb-nav-fixed">
-        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <a class="navbar-brand" href="userIndex.php">Instabuilder</a>
             <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#"><i class="fas fa-bars"></i></button>
             <!-- Navbar Search-->
@@ -100,45 +99,66 @@ include '../dist/Find.php';
             </div>
             <div id="layoutSidenav_content">
                 <main>
+                <?php
+                $db = DB();
+                $sql = "SELECT * FROM hashtags ORDER BY hash_no";
+                $result = $db->query($sql);
+//        echo '<table  border="1">';
+//        while ($row = $result->fetch(PDO::FETCH_OBJ)) {
+////PDO::FETCH_OBJ 指定取出資料的型態
+//            echo '<tr>';
+//            echo '<td>' . $row->顧客編號 . "</td><td>" . $row->顧客名稱 . "</td>";
+//            echo '</tr>';
+//        }
+//        echo '</table>';
+                ?>
                     <div class="container-fluid">
-                        <h1 class="mt-4">歡迎<?php echo $_SESSION["signup_email"]; ?></br><?php echo date('Y-M-D'); ?></h1>
-                        <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item active">      </li>
-                        </ol>
-                        <div class="row">
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-primary text-white mb-4">
-                                    <div class="card-body">帳戶管理</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        
-                                    </div>
-                                </div>
+                        <h1 class="mt-4">hashtags總覽</h1>
+                        
+                        
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <i class="fas fa-table mr-1"></i>
+                                hashtag
                             </div>
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-warning text-white mb-4">
-                                    <div class="card-body">Hashtags</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th >hashtag編號</th>
+                                                <th >hashtag</th>
+                                                <th >分類</th>
+                                                <th>點擊次數</th>
+                                                
+                                            </tr>
+                                        </thead>
                                         
-                                    </div>
+                                        <tbody>
+                                            <tr>
+                                            <?php
+                        while ($row = $result->fetch(PDO::FETCH_OBJ)) {
+                            //PDO::FETCH_OBJ 指定取出資料的型態
+                            echo '<tr>';
+                            echo '<td>' . $row->hash_no . "</td>"
+                            . "<td>" . $row->hash_name. "</td>"
+                            . "<td>" . $row->cate_no . "</td>"
+                            . "<td>" . $row->times . "</td>"
+                            
+                            
+                            ;
+
+                            echo '</tr>';
+                        }
+                        ?>
+                                            </tr>
+                                           
+                                        </tbody>
+                                    </table>
                                 </div>
+                                
                             </div>
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-success text-white mb-4">
-                                    <div class="card-body">貼文管理</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-danger text-white mb-4">
-                                    <div class="card-body">貼文觸及</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        
-                                    </div>
-                                </div>
-                            </div>
-                        </div>   
+                        </div>
                     </div>
                 </main>
                 <footer class="py-4 bg-light mt-auto">
@@ -158,11 +178,55 @@ include '../dist/Find.php';
         <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="js/scripts.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-        <script src="assets/demo/chart-area-demo.js"></script>
-        <script src="assets/demo/chart-bar-demo.js"></script>
         <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
         <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
         <script src="assets/demo/datatables-demo.js"></script>
+        <script>
+            (function (document) {
+                'use strict';
+
+                // 建立 LightTableFilter
+                var LightTableFilter = (function (Arr) {
+
+                    var _input;
+
+                    // 資料輸入事件處理函數
+                    function _onInputEvent(e) {
+                        _input = e.target;
+                        var tables = document.getElementsByClassName(_input.getAttribute('data-table'));
+                        Arr.forEach.call(tables, function (table) {
+                            Arr.forEach.call(table.tBodies, function (tbody) {
+                                Arr.forEach.call(tbody.rows, _filter);
+                            });
+                        });
+                    }
+
+                    // 資料篩選函數，顯示包含關鍵字的列，其餘隱藏
+                    function _filter(row) {
+                        var text = row.textContent.toLowerCase(), val = _input.value.toLowerCase();
+                        row.style.display = text.indexOf(val) === -1 ? 'none' : 'table-row';
+                    }
+
+                    return {
+                        // 初始化函數
+                        init: function () {
+                            var inputs = document.getElementsByClassName('light-table-filter');
+                            Arr.forEach.call(inputs, function (input) {
+                                input.oninput = _onInputEvent;
+                            });
+                        }
+                    };
+                })(Array.prototype);
+
+                // 網頁載入完成後，啟動 LightTableFilter
+                document.addEventListener('readystatechange', function () {
+                    if (document.readyState === 'complete') {
+                        LightTableFilter.init();
+                    }
+                });
+
+            })(document);
+        </script>
     </body>
+
 </html>
