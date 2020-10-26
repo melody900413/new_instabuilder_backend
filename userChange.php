@@ -1,8 +1,7 @@
-<!DOCTYPE html>
+<!doctype html>
 <?php
 session_start();
-include '../dist/Find.php';
-@include '../DataBase.php';
+include 'Find.php';
 @logInSure();
 ?>
 <html lang="en">
@@ -12,31 +11,37 @@ include '../dist/Find.php';
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Dashboard - SB Admin</title>
+        <title>Static Navigation - SB Admin</title>
         <link href="css/styles.css" rel="stylesheet" />
-        <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     </head>
-    <body class="sb-nav-fixed">
-    <?php
-        if(isset($_SESSION["unLog"])){
-            if($_SESSION["unLog"]){
-                echo '<script>  swal({
-                text: "未登入或登入逾時！",
+    <body>
+        <?php
+        if (isset($_POST["Reg"])) {
+            $db = DB();
+            $sql = "SELECT * FROM user where user_id =" . $_POST["user_id"];
+            $result = $db->query($sql);
+            while ($row = $result->fetch(PDO::FETCH_OBJ)) {
+                if (isset($row->user_id)) {
+                    $_SESSION["user_id"] = $row->user_id;
+                    $_SESSION["user_name"] = $row->user_name;
+                    $_SESSION["signup_datetime"] = $row->signup_datetime;
+                    $_SESSION["signup_email"] = $row->signup_email;
+                    $_SESSION["login_pas"] = $row->login_pas;
+                    $_SESSION["privilege"] = $row->privilege;
+                    header("Location:userChange2.php");
+                }
+            }
+            echo '<script>  swal({
+                title: "無此客戶！",
+                text: "請檢查是否輸入錯誤資料！",
                 icon: "error",
                 button: false,
                 timer: 2000,
                 }); </script>';
-                session_unset();
-            }   
         }
-
-        
-        
-        if (isset($_POST["next"])) {
-            findUser($_POST["signup_email"], $_POST["login_pas"]);
-        }
-        ?> 
+        ?>
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <a class="navbar-brand" href="userIndex.php">Instabuilder</a>
             <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#"><i class="fas fa-bars"></i></button>
@@ -46,7 +51,7 @@ include '../dist/Find.php';
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="userDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                        <a class="dropdown-item" href="login.html">Logout</a>
+                        <a class="dropdown-item" href="login.php">Logout</a>
                     </div>
                 </li>
             </ul>
@@ -54,7 +59,7 @@ include '../dist/Find.php';
         <div id="layoutSidenav">
             <div id="layoutSidenav_nav">
                 <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-                    <div class="sb-sidenav-menu">
+                <div class="sb-sidenav-menu">
                         <div class="nav">
                             <div class="sb-sidenav-menu-heading">Core</div>
                             <a class="nav-link" href="userIndex.php">
@@ -83,8 +88,7 @@ include '../dist/Find.php';
                             <div class="collapse" id="hashtagLayouts" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
                                     <a class="nav-link" href="hashtagAll.php">總覽</a>
-                                    <a class="nav-link" href="hashtagAdd.php">新增</a>
-                                    <a class="nav-link" href="hashtagDelete.php">刪除</a>
+                                    <a class="nav-link" href="hashtagCate.php">類別</a>
                                 </nav>
                             </div>
                             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#postLayouts" aria-expanded="false" aria-controls="collapseLayouts">
@@ -119,78 +123,61 @@ include '../dist/Find.php';
                 </nav>
             </div>
             <div id="layoutSidenav_content">
-                <main>
-                <div class="container">          
+            <div class="container">          
 
 
 <!--~~~~~~~~~~~~~~~~~--> 
-<div class="content">
-<h1 class="mt-4">管理者登入</h1>
+            <div class="content">
+            <h1 class="mt-4">帳戶更新</h1>
+                <hr/>
 
-    <form method="post" action="">
+                <form method="post" action="">
 
-        <div class="6u 12u$(small)" style="margin-left: 20%"> 
-            <p>帳號：</p>
-            <input type="text" name="signup_email" id="id" value="" placeholder="" required>
-        </div>
-        <br/>
-        <div class="6u$ 12u$(small)"  style="margin-left: 20%"> 
-            <p>密碼：</p>											
-            <input type="password" name="login_pas" id="password" value="" placeholder="" required>
-        </div>  
+                    <div class="6u 12u$(small)"> <p>帳戶編號：</p>
 
-        <div class="12u$">
-            <ul class="actions">
-                <div align="right"  style="margin-right: 5%">
+                        <input type="number" name="user_id" id="big" value="" placeholder="Number" required>
+                        <script>
+                            var url = location.href;
+                            //之後去分割字串把分割後的字串放進陣列中
+                            var ary1 = url.split('?');
+                            //此時ary1裡的內容為：
+                            //ary1[0] = 'index.aspx'，ary2[1] = 'id=U001&name=GQSM'
 
-                    <li><input type="submit" name="next" value="ENTER"></li>
+                            //下一步把後方傳遞的每組資料各自分割
+                            var ary2 = ary1[1].split('&');
+                            //此時ary2裡的內容為：
+                            //ary2[0] = 'id=U001'，ary2[1] = 'name=GQSM'
 
-                </div>
-            </ul>
-        </div>
-    </form>
+                            //最後如果我們要找id的資料就直接取ary[0]下手，name的話就是ary[1]
+                            var ary3 = ary2[0].split('=');
+                            //此時ary3裡的內容為：
+                            //ary3[0] = 'id'，ary3[1] = 'U001'
+
+                            //取得id值
+                            var id = ary3[1];
+                            var aee = 10;
+                            document.getElementById("big").value = id;
+                        </script>
+                    </div>
 
 
-</div>   
-                        <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item active">      </li>
-                        </ol>
-                        <div class="row">
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-primary text-white mb-4">
-                                    <div class="card-body">帳戶管理</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        
-                                    </div>
-                                </div>
+                    <div class="12u$">
+                        <ul class="actions">
+                            <div align="right"  style="margin-right: 5%">
+
+                                <li><input type="submit" name="Reg" value="查詢"></li>
+
                             </div>
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-warning text-white mb-4">
-                                    <div class="card-body">Hashtags</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-success text-white mb-4">
-                                    <div class="card-body">貼文管理</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-danger text-white mb-4">
-                                    <div class="card-body">貼文觸及</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        
-                                    </div>
-                                </div>
-                            </div>
-                        </div>   
-                    
-                </main>
+                        </ul>
+                    </div>
+                </form>
+
+
+            </div>       
+
+            
+
+            </div>
                 <footer class="py-4 bg-light mt-auto">
                     <div class="container-fluid">
                         <div class="d-flex align-items-center justify-content-between small">
@@ -208,11 +195,12 @@ include '../dist/Find.php';
         <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="js/scripts.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-        <script src="assets/demo/chart-area-demo.js"></script>
-        <script src="assets/demo/chart-bar-demo.js"></script>
-        <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
-        <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
-        <script src="assets/demo/datatables-demo.js"></script>
+        <script src="assets/js/jquery.min.js"></script>
+            <script src="assets/js/jquery.scrollex.min.js"></script>
+            <script src="assets/js/skel.min.js"></script>
+            <script src="assets/js/util.js"></script>
+            <script src="assets/js/main.js"></script>
     </body>
 </html>
+
+
