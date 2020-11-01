@@ -120,23 +120,25 @@ session_start();
             <div id="layoutSidenav_content">
                 <main>
                 <div class="content">
-                <h1 class="mt-4">管理者登入</h1>
+                <h1 class="mt-4" style="text-align:center;margin-bottom:50px;margin-top:150px">管理者登入</h1>
 
                 <form method="post" action="">
 
-                    <div class="6u 12u$(small)" style="margin-left: 20%"> 
-                        <p>帳號：</p>
+                    <div class="6u 12u$(small)"  style="text-align:center;border-radius:50px" > 
+                        <p>帳號：
                         <input type="text" name="signup_email" id="id" value="" placeholder="" required>
+                        </p>
                     </div>
                     <br/>
-                    <div class="6u$ 12u$(small)"  style="margin-left: 20%"> 
-                        <p>密碼：</p>											
+                    <div class="6u$ 12u$(small)"  style="text-align:center;border-radius:50px"> 
+                        <p>密碼：											
                         <input type="password" name="login_pas" id="password" value="" placeholder="" required>
+                        </p>
                     </div>  
 
                     <div class="12u$">
                         <ul class="actions">
-                            <div align="right"  style="margin-right: 5%">
+                            <div style="text-align:center">
 
                                 <li><input type="submit" name="next" value="ENTER"></li>
 
