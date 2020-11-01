@@ -132,10 +132,10 @@ include '../dist/Find.php';
                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
-                                            <th >帳號編號</th>
-                        <th >帳號名稱</th>
-                        <th >貼文編號</th>
-                        <th >貼文留言數量</th>
+                                                <th >帳號編號</th>
+                                                <th >帳號名稱</th>
+                                                <th >貼文編號</th>
+                                                <th >貼文留言數量</th>
                                             </tr>
                                         </thead>
                                         
