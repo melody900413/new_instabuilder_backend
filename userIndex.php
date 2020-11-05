@@ -17,6 +17,18 @@ include 'Find.php';
         <link href="css/styles.css" rel="stylesheet" />
         <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" crossorigin="anonymous"></script>
+        <style>
+            #myVideo {
+				max-width: 80vw;
+				min-width: 60vw;
+				position: relative;
+				right: 0;
+				bottom: 0;
+				min-width: 100%;
+                min-height: 100%;
+                z-index:10;
+				}
+        </style>
     </head>
     <body class="sb-nav-fixed">
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
@@ -102,11 +114,25 @@ include 'Find.php';
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid">
-                        <h1 class="mt-4">歡迎<?php echo $_SESSION["signup_email"]; ?></br><?php echo date('Y-M-D'); ?></h1>
+                        <h1 class="mt-4" style="font-size:24px;">歡迎<?php echo $_SESSION["signup_email"]; ?></br><?php echo date('Y-M-D'); ?></h1>
                         <ol class="breadcrumb mb-4">
                             <li class="breadcrumb-item active">      </li>
                         </ol>
-                        <div class="row">
+                        <video autoplay loop muted id="myVideo" >
+                                            <source src="video/insta.mp4" type="video/mp4">
+                                        </video> 
+                        <div class="card-body">
+                            <div class="table-responsive">                                
+                                <div class="12u$">
+                                    <div class="select-wrapper">
+                                        <!-- <video autoplay loop muted id="myVideo" >
+                                            <source src="video/insta.mp4" type="video/mp4">
+                                        </video>     -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="row">
                             <div class="col-xl-3 col-md-6">
                                 <div class="card bg-primary text-white mb-4">
                                     <div class="card-body">帳戶管理</div>
@@ -139,18 +165,18 @@ include 'Find.php';
                                     </div>
                                 </div>
                             </div>
-                        </div>   
+                        </div>    -->
                     </div>
                 </main>
                 <footer class="py-4 bg-light mt-auto">
                     <div class="container-fluid">
                         <div class="d-flex align-items-center justify-content-between small">
                             <div class="text-muted">Copyright &copy; NTUB GROUP 109501</div>
-                            <div>
+                            <!-- <div>
                                 <a href="#">Privacy Policy</a>
                                 &middot;
                                 <a href="#">Terms &amp; Conditions</a>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </footer>
