@@ -16,6 +16,9 @@ session_start();
         <link href="css/styles.css" rel="stylesheet" />
         <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" crossorigin="anonymous"></script>
+        <style>
+  
+        </style>
     </head>
     <body class="sb-nav-fixed">
     <?php
@@ -119,34 +122,35 @@ session_start();
             </div>
             <div id="layoutSidenav_content">
                 <main>
-                <div class="content">
-                <h1 class="mt-4" style="text-align:center;margin-bottom:50px;margin-top:150px">管理者登入</h1>
-
+                <div class="content" style="margin-top:100px;">
+                <h1 class="mt-4" style="text-align:center;margin-bottom:50px;margin-top:150px;font-weight:800;"> &nbsp; &nbsp;管理者登入</h1>
+                <hr size="8px" text-align="center" width="30%" style="margin-bottom:50px;">
                 <form method="post" action="">
 
-                    <div class="6u 12u$(small)"  style="text-align:center;border-radius:50px" > 
-                        <p>帳號：
-                        <input type="text" name="signup_email" id="id" value="" placeholder="" required>
+                    <div class="6u 12u$(small)"  style="text-align:center;border-radius:50px;" > 
+                        <p style="font-weight:bold;">帳號：
+                        <input type="text" name="signup_email" id="id" value="" placeholder="" required 
+                        style="border-radius:0.5rem;padding:5px 10px;font-weight:400;">
                         </p>
                     </div>
                     <br/>
-                    <div class="6u$ 12u$(small)"  style="text-align:center;border-radius:50px"> 
-                        <p>密碼：											
-                        <input type="password" name="login_pas" id="password" value="" placeholder="" required>
+                    <div class="6u$ 12u$(small)"  style="text-align:center;border-radius:50px;"> 
+                        <p style="font-weight:bold;">密碼：											
+                        <input type="password" name="login_pas" id="password" value="" placeholder="" required 
+                        style="border-radius:0.5rem;padding:5px 10px;font-weight:400;">
                         </p>
                     </div>  
 
-                    <div class="12u$">
+                    <div class="12u$" style="margin-top:50px;" >
                         <ul class="actions">
-                            <div style="text-align:center">
-
-                                <li><input type="submit" name="next" value="ENTER"></li>
-
+                            <div style="text-align:center;list-style-type: none;">
+                                <li ><input type="submit" name="next" value="登入"  style="border: 2px solid #ffffff;border-radius:0.5rem;padding:2.5px 10px;color:#000000;background
+                                :#ffcce3;font-weight:800;"></li>
                             </div>
                         </ul>
                     </div>
                 </form>
-
+                
 
             </div>       
                 </main>
@@ -154,11 +158,11 @@ session_start();
                     <div class="container-fluid">
                         <div class="d-flex align-items-center justify-content-between small">
                             <div class="text-muted">Copyright &copy; NTUB GROUP 109501</div>
-                            <div>
+                            <!-- <div>
                                 <a href="#">Privacy Policy</a>
                                 &middot;
                                 <a href="#">Terms &amp; Conditions</a>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </footer>
